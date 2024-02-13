@@ -1,7 +1,8 @@
-// mainPelis.js
-import { Link } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import YouTube from 'react-youtube';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { setFavoriteMovie } from '../redux/slices/favoritemovie/favoriteMovieSlice';  // Importa la acción para establecer la película favorita
 import * as api from '../api/api';
 
 const MainPelis = () => {
@@ -9,6 +10,9 @@ const MainPelis = () => {
   const [searchKey, setSearchKey] = useState('');
   const [trailer, setTrailer] = useState(null);
   const [movie, setMovie] = useState({ title: 'Loading Movies' });
+  const [favorites, setFavorites] = useState([]);
+  const { counter } = useSelector(state => state.counter);
+  const dispatch = useDispatch();
 
   const fetchMovies = async (searchKey) => {
     const { movies, movieDetails } = await api.fetchMoviesAndDetails(searchKey);
@@ -32,6 +36,7 @@ const MainPelis = () => {
     const movieDetails = await api.fetchMovieDetails(selectedMovie.id);
     setMovie(movieDetails);
     setTrailer(null); // Resetear el trailer al seleccionar una nueva película
+    dispatch(setFavoriteMovie(movieDetails.title)); // Guardar la película seleccionada como favorita en el estado global de Redux
     window.scrollTo(0, 0);
   };
 
@@ -43,13 +48,25 @@ const MainPelis = () => {
     setTrailer(null);
   };
 
+  const addToFavorites = () => {
+    let newFavorites;
+    if (favorites.includes(movie.title)) {
+      newFavorites = favorites.filter(title => title !== movie.title);
+    } else {
+      newFavorites = [...favorites, movie.title];
+    }
+    setFavorites(newFavorites);
+    localStorage.setItem('favorites', JSON.stringify(newFavorites));
+  };
+
   useEffect(() => {
     fetchMovies();
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites'));
+    if (storedFavorites) {
+      setFavorites(storedFavorites);
+    }
   }, []);
 
-
-  console.log(movie)
- 
   return (
     <main className="bg-blue-900/55 min-h-screen">
       <div className="container mx-auto py-8">
@@ -107,8 +124,8 @@ const MainPelis = () => {
                 <div className="absolute inset-0 flex flex-col items-center justify-end p-8">
                   <h1 className="text-white text-3xl mb-4 font-medium bg-black/50 ">{movie.title}</h1>
                   <p className="text-white text-lg mb-8 font-medium bg-black/50">{movie.overview}</p>
-                   <p className="text-white text-lg mb-8 font-medium bg-black/50"> Estreno :{movie.release_date} <br></br>Titulo original: {movie.original_title}<br></br>Identificador en IMDB: {movie.imdb_id} </p> 
-               
+                  <p className="text-white text-lg mb-8 font-medium bg-black/50"> Estreno :{movie.release_date} <br></br>Titulo original: {movie.original_title}<br></br>Identificador en IMDB: {movie.imdb_id} </p>
+
                   <div>
                     {movie.videos && movie.videos.results ? (
                       <button
@@ -123,18 +140,26 @@ const MainPelis = () => {
                     )}
                   </div>
                   <br></br>
-                  <button
-                        className="boton bg-blue-700 text-white p-2 text-center"
-                        
-                        type="button"
+                  <div className="flex">
+                    <button
+                      className={`boton ${favorites.includes(movie.title) ? 'bg-green-500' : 'bg-blue-700'} text-white p-2 text-center mr-4`}
+                      onClick={addToFavorites}
+                      type="button"
+                    >
+                      {favorites.includes(movie.title) ? 'Favorita' : 'Marcar como favorita♡'}
+                    </button>
+                    <button
+                      className="boton bg-blue-700 text-white p-2 text-center"
+                      type="button"
+                    >
+                      <Link
+                        className="flex items-center "
+                        to="/comprarentrada"
                       >
-                        <Link
-                className="flex items-center "
-                to="/comprarentrada"
-              >
-                Comprar entrada
-              </Link>
-                      </button>
+                        Comprar entrada
+                      </Link>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

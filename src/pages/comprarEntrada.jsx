@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import Popup from '../components/Popup';
+
 const CompraEntradas = () => {
   const [funcionSeleccionada, setFuncionSeleccionada] = useState("Función 1");
   const [cantidadEntradas, setCantidadEntradas] = useState(1);
   const [extras, setExtras] = useState({ palomitas: false, bebidas: false });
   const [cantidadExtras, setCantidadExtras] = useState(0);
   const [totalPagar, setTotalPagar] = useState(0);
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  const favoriteMovie = useSelector(state => state.favoriteMovies.favoriteMovies);
+  console.log(favoriteMovie);
 
   const handleChangeFuncion = (event) => {
     setFuncionSeleccionada(event.target.value);
@@ -34,27 +40,47 @@ const CompraEntradas = () => {
   const handlePagar = () => {
     const total = calcularTotalPagar();
     setTotalPagar(total);
- 
-    /* alert(`Total a pagar: $${total}`); */
   };
 
-  const [popupOpen, setPopupOpen] = useState(false);
-
   const openPopupForDuration = () => {
+    handlePagar();
+    guardarCompra(); // Aquí llamamos a la función que guarda la compra
     setPopupOpen(true);
     setTimeout(() => {
       setPopupOpen(false);
-      window.history.back()
+      window.history.back();
     }, 4000); // 4000 milliseconds = 4 seconds
   };
+
+  const guardarCompra = () => {
+    // Recuperar las compras existentes del localStorage
+    const comprasGuardadas = JSON.parse(localStorage.getItem('compras')) || [];
+  
+    // Crear la nueva compra
+    const nuevaCompra = {
+      pelicula: favoriteMovie,
+      funcion: funcionSeleccionada,
+      cantidadEntradas: cantidadEntradas,
+      extras: extras,
+      cantidadExtras: cantidadExtras,
+      totalPagar: totalPagar
+    };
+  
+    // Agregar la nueva compra a la lista de compras existentes
+    const comprasActualizadas = [...comprasGuardadas, nuevaCompra];
+  
+    // Guardar las compras actualizadas en el localStorage
+    localStorage.setItem('compras', JSON.stringify(comprasActualizadas));
+  };
+
   useEffect(() => {
-    handlePagar()
-  }, [cantidadEntradas,extras,cantidadExtras]);
+    handlePagar();
+  }, [cantidadEntradas, extras, cantidadExtras]);
 
   return (
     <section className="bg-gray-100 p-8">
       <div className="container mx-auto">
-        <h2 className="text-3xl font-bold mb-6">Compra de Entradas</h2>
+        <h2 className="text-3xl font-bold mb-6">Compra de Entradas para {favoriteMovie}</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="bg-white p-4 rounded-md shadow-md">
@@ -72,8 +98,6 @@ const CompraEntradas = () => {
               <label className="block text-gray-700 mb-2">Cantidad de Entradas:</label>
               <input type="number" min="1" value={cantidadEntradas} onChange={handleChangeCantidadEntradas} className="w-full p-2 border rounded-md" />
             </div>
-
-            
           </div>
 
           <div className="bg-white p-4 rounded-md shadow-md">
@@ -95,8 +119,6 @@ const CompraEntradas = () => {
               <label className="block text-gray-700 mb-2">Cantidad de Extras:</label>
               <input type="number" min="0" value={cantidadExtras} onChange={handleChangeCantidadExtras} className="w-full p-2 border rounded-md" />
             </div>
-
-           
           </div>
 
           <div className="col-span-1 md:col-span-2 bg-white p-4 rounded-md shadow-md">

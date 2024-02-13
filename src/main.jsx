@@ -4,9 +4,13 @@ import './index.css'
 import ErrorPage from './pages/ErrorPage.jsx'
 import MainPelis from './pages/mainPelis.jsx'
 import Comprarentrada from './pages/comprarEntrada.jsx'
+import MiCuenta from './pages/miCuenta.jsx'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import App from './App.jsx'
+import { Provider } from 'react-redux';
+import {store} from './redux/store.js'
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -35,6 +39,11 @@ const router = createBrowserRouter([
       element: <Comprarentrada />,
       
     }, 
+    {
+      path: "/miCuenta",
+      element: <MiCuenta />,
+      
+    }, 
    
     
 
@@ -53,6 +62,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <Provider store={store}>
   <RouterProvider router={router} />
+  </Provider>
 </React.StrictMode>,
 )
