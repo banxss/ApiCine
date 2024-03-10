@@ -8,21 +8,21 @@ const Footer = () => {
         <div className="col-span-2 md:col-span-1">
           <h2 className="text-xl font-bold mb-4">Acerca de Nosotros</h2>
           <p className="text-sm">
-            La mejor venta de tickets de toda andalucía(is not spain)
+            La mejor venta de tickets de toda Andalucía (is not Spain)
           </p>
         </div>
 
         <div className="col-span-2 md:col-span-1">
           <h2 className="text-xl font-bold mb-4">Contáctanos</h2>
           <p className="text-sm">
-            Calle scorsese nº 10 <br />
+            Calle Scorsese nº 10 <br />
             Correo electrónico: nohablesenelcine@tarantino.com <br />
             Teléfono: 957 777 777
           </p>
         </div>
 
         <div className="col-span-2 md:col-span-1">
-          <h2 className="text-xl font-bold mb-4">Síguenos en las cacas sociales</h2>
+          <h2 className="text-xl font-bold mb-4">Síguenos en las redes sociales</h2>
           <div className="flex space-x-4">
             <a href="#" className="text-white hover:text-gray-300">
               <i className="fab fa-facebook"></i>
@@ -36,7 +36,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
 
       <div className="mt-8 text-center">
         <p className="text-sm">

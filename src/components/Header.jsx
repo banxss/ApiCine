@@ -20,8 +20,15 @@ const Header = () => {
               <Link to="/" className="text-white hover:text-gray-300">Inicio</Link>
             </li>
             <li>
-              <Link to="/miCuenta" className="text-white hover:text-gray-300">Mi cuenta</Link>
+              <Link to="/search" className="text-white hover:text-gray-300">Buscar peliculas</Link>
             </li>
+            <li>
+              <Link to="/miCuenta" className="text-white hover:text-gray-300">Tus compras</Link>
+            </li>
+            <li>
+              <Link to="/favo" className="text-white hover:text-gray-300">Tus favoritas</Link>
+            </li>
+         
          
        
           </ul>
